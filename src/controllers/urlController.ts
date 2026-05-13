@@ -1,7 +1,10 @@
 import { UrlModel } from "../models/Url";
 import { Request, Response } from "express";
 import { generateId } from "../services/idGenerator";
+import redisClient from "../services/redis";
+import { json } from "node:stream/consumers";
 
+//function to shorten the url and store in the mongodb database
 export const shortenUrl = async (req: Request, res: Response) => {
     const longUrl = req.body.longUrl;
     if(!longUrl){
@@ -49,8 +52,18 @@ export const shortenUrl = async (req: Request, res: Response) => {
 export const redirectUrl = async (req: Request, res: Response) => {
     const shortId = req.params.shortId;
     try{
+        const cachedUrl = await redisClient.get(shortId as string);
+        if(cachedUrl){
+            //cache hit
+            console.log("cache hit!");
+            return res.status(200).json({
+                longUrl : cachedUrl
+            })
+        }
+        console.log("cache miss!");
         const existingUrl = await UrlModel.findOne({shortId: shortId});
         if(existingUrl){
+            await redisClient.setEx(shortId as string, 3600, existingUrl.longUrl as string);
             return res.status(200).json({
                 longUrl: existingUrl.longUrl
             });
