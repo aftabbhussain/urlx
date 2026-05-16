@@ -2,7 +2,7 @@ import { UrlModel } from "../models/Url";
 import { Request, Response } from "express";
 import { generateId } from "../services/idGenerator";
 import redisClient from "../services/redis";
-import { json } from "node:stream/consumers";
+import { analyticsQueue } from "../services/queue";
 
 //function to shorten the url and store in the mongodb database
 export const shortenUrl = async (req: Request, res: Response) => {
@@ -51,10 +51,21 @@ export const shortenUrl = async (req: Request, res: Response) => {
 //function to redirect url
 export const redirectUrl = async (req: Request, res: Response) => {
     const shortId = req.params.shortId;
+    
+    //analytics payload
+    const clickData = {
+        shortId : shortId,
+        ip : req.ip || req.socket.remoteAddress || "unknown",
+        userAgent :  req.headers['user-agent'] || "unknown",
+        timeStamp : new Date()
+
+    };
     try{
         const cachedUrl = await redisClient.get(shortId as string);
         if(cachedUrl){
             //cache hit
+            
+            analyticsQueue.add('record-click', clickData);
             console.log("cache hit!");
             return res.status(200).json({
                 longUrl : cachedUrl
@@ -64,6 +75,8 @@ export const redirectUrl = async (req: Request, res: Response) => {
         const existingUrl = await UrlModel.findOne({shortId: shortId});
         if(existingUrl){
             await redisClient.setEx(shortId as string, 3600, existingUrl.longUrl as string);
+
+            analyticsQueue.add('record-click', clickData);
             return res.status(200).json({
                 longUrl: existingUrl.longUrl
             });

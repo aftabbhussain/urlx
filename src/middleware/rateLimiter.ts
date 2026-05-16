@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 export const rateLimiter = async (req: Request, res: Response, next: NextFunction ) => {
     try{
-        const LIMIT = 5;
+        const LIMIT = 500;
         const WINDOW_TIME = 60;
         const ip = req.ip || req.socket.remoteAddress || "unknown";
         const redisKey = `rate_limit:${ip}`; // using this identifier for rate limiting

@@ -6,6 +6,8 @@ import { connectRedis } from "./services/redis";
 
 dotenv.config();
 
+import './workers/analyticsWorker';
+
 const app = express();
 
 // Initialize Redis connection
