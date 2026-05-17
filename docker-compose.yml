@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+  api:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - MONGO_URI=${MONGO_URI:-} #if there is an MongoDB Atlas MONGO_URI in the local .env file then use that or empty(Local MongoDB instance)
+    depends_on:
+      - mongodb
+      - redis
+volumes: #prevents the database data from flushing when the container restarts
+  mongo-data:
