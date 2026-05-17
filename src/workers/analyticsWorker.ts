@@ -1,7 +1,7 @@
 import { Worker, Job } from "bullmq";
 import IORedis from 'ioredis';
 import { AnalyticsModel } from "../models/Analytics";
-const redisConnection = new IORedis('redis://localhost:6379', {
+const redisConnection = new IORedis('redis://redis:6379', {
     maxRetriesPerRequest : null
 });
 
