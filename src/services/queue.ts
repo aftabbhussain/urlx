@@ -1,7 +1,7 @@
 import { Queue } from "bullmq";
 import IORedis from 'ioredis';
 
-const redisConnection = new IORedis('redis://localhost:6379', {
+const redisConnection = new IORedis('redis://redis:6379', {
     maxRetriesPerRequest : null
 });
 
