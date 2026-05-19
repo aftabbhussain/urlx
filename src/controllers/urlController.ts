@@ -1,6 +1,6 @@
 import { UrlModel } from "../models/Url";
 import { Request, Response } from "express";
-import { generateId } from "../services/idGenerator";
+import { idService } from "../services/idGenerator";
 import redisClient from "../services/redis";
 import { analyticsQueue } from "../services/queue";
 
@@ -28,8 +28,8 @@ export const shortenUrl = async (req: Request, res: Response) => {
         if(existingUrl){
             return res.status(200).json({shortId: existingUrl.shortId});
         }
-        //if the long url doesn't exist, we create one
-        const shortId = generateId(5);
+        //if the long url doesn't exist, we create one using the distributed id generation service
+        const shortId = await idService.getNextShortId();
         
         const newUrl = await UrlModel.create({
             longUrl: longUrl,
