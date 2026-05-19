@@ -2,7 +2,7 @@ import express, {Request, Response} from "express"
 import dotenv from "dotenv";
 import { connectDB } from "./db";
 import urlRoutes from "./routes/urlRoutes";
-import { connectRedis } from "./services/redis";
+import { connectRedis, initBloomFilter } from "./services/redis";
 
 dotenv.config();
 
@@ -14,6 +14,9 @@ const app = express();
 connectRedis().catch((err) =>{
     console.error("Error connecting with redis", err);
 });
+
+//initilaze the bloom filter after redis connects
+initBloomFilter();
 
 connectDB();
 
