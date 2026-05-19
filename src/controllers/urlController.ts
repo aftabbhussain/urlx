@@ -30,10 +30,15 @@ export const shortenUrl = async (req: Request, res: Response) => {
         }
         //if the long url doesn't exist, we create one
         const shortId = generateId(5);
+        
         const newUrl = await UrlModel.create({
             longUrl: longUrl,
             shortId: shortId
         });
+
+        //add to the bloom filter
+        await redisClient.bf.add('shortids', shortId);
+
         return res.status(201).json({
             message: "ShortId created successfully",
             data: newUrl
@@ -61,6 +66,13 @@ export const redirectUrl = async (req: Request, res: Response) => {
 
     };
     try{
+        const exits = redisClient.bf.exists('shortids', shortId as string);
+        if(!exits){
+            console.log(`Fake ID blocked by bloom filter : ${shortId}`);
+            return res.status(404).json({
+                error: 'Url not found'
+            })
+        }
         const cachedUrl = await redisClient.get(shortId as string);
         if(cachedUrl){
             //cache hit

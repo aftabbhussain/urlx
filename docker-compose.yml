@@ -7,7 +7,7 @@ services:
     volumes:
       - mongo-data:/data/db
   redis:
-    image: redis:alpine
+    image: redis/redis-stack-server:latest
     ports:
       - "6379:6379"
   api:
