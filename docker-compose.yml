@@ -13,12 +13,21 @@ services:
   api:
     build: .
     ports:
-      - "4000:4000"
+      - "4000"
     environment:
       - PORT=4000
       - MONGO_URI=${MONGO_URI:-} #if there is an MongoDB Atlas MONGO_URI in the local .env file then use that or empty(Local MongoDB instance)
     depends_on:
       - mongodb
       - redis
-volumes: #prevents the database data from flushing when the container restarts
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80" 
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro 
+    depends_on:
+      - api
+volumes: 
   mongo-data:
