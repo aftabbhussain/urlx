@@ -39,21 +39,6 @@ URLX uses:
 
 </p>
 
----
-
-# Core Distributed Concepts
-
-| Concept | Implementation | Benefit |
-|---|---|---|
-| Load Balancing | Nginx distributes requests across API clones | Horizontal scalability |
-| Distributed ID Generation | Redis atomic counter + range allocation | O(1) short URL generation |
-| Redis Cache | Cache-aside pattern for redirects | Fast URL resolution |
-| RedisBloom Filter | Checks fake/non-existent IDs before DB lookup | Prevents cache penetration |
-| Async Analytics | BullMQ queue + worker processing | Non-blocking redirects |
-| Stateless Auth | JWT-based authentication | No shared server memory |
-
----
-
 # Performance Metrics
 
 | Operation | Complexity |
@@ -306,7 +291,6 @@ Nginx automatically distributes traffic across all containers.
 - Kubernetes deployment
 - Prometheus + Grafana monitoring
 - Distributed tracing
-- Rate limiting
 - URL expiration
 - Geo analytics
 - Kafka/RabbitMQ migration
@@ -321,6 +305,7 @@ Nginx automatically distributes traffic across all containers.
 - Backend scalability
 - Reverse proxies
 - Load balancing
+- Rate limiting
 - Queue systems
 - Redis internals
 - Probabilistic data structures
@@ -328,18 +313,6 @@ Nginx automatically distributes traffic across all containers.
 - Docker networking
 - Production-grade backend design
 
----
-
-# Deployment Targets
-
-- AWS ECS
-- Kubernetes
-- Railway
-- Render
-- Fly.io
-- DigitalOcean
-
----
 
 # Author
 
