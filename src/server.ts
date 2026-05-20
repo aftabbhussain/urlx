@@ -2,6 +2,7 @@ import express, {Request, Response} from "express"
 import dotenv from "dotenv";
 import { connectDB } from "./db";
 import urlRoutes from "./routes/urlRoutes";
+import authRoutes from "./routes/authRoutes";
 import { connectRedis, initBloomFilter } from "./services/redis";
 
 dotenv.config();
@@ -22,6 +23,7 @@ connectDB();
 
 app.use(express.json());
 
+app.use('/auth', authRoutes);
 app.use('/', urlRoutes)
 
 const PORT = process.env.PORT || 3000;
