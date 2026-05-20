@@ -31,6 +31,9 @@ URLX uses:
 
 # System Architecture
 
+<img width="631" height="614" alt="image" src="https://github.com/user-attachments/assets/df8a61ba-c22b-42d8-8e02-307e636c0062" />
+
+
 <p align="center">
   
 
